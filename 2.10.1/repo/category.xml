@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+      <feature id="com.gwtplugins.eclipse.sdkbundle.gwt2_10_1.feature" version="2.10.1.qualifier">
+      <category name="GWT_SDK"/>
+   </feature>
+   <category-def name="GWT_SDK" label="GWT SDK">
+      <description>
+         GWT SDKs
+      </description>
+   </category-def>
+</site>

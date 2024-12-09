@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.gwtplugins.eclipse</groupId>
+  <artifactId>trunk</artifactId>
+  <version>2.9.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <tycho.version>3.0.1</tycho.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <eclipse.target>2022-09</eclipse.target> <!-- TODO change to neon -->
+
+    <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
+    <eclipse-repo.url>https://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
+
+    <!-- Release url determined by upload in upload-release.sh -->
+    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/v3/release</comparator.repo>
+
+    <!-- OS-specific JVM flags, empty for the default case but redefined below -->
+    <os-jvm-flags />
+
+    <!-- Skip the deployment here, submodules can override this property -->
+    <maven.deploy.skip>true</maven.deploy.skip>
+    
+  </properties>
+
+  <modules>
+<!--    <module>resources</module> -->
+
+    <!-- Features located in ./repo/category.xml -->
+    <module>features/com.gwtplugins.eclipse.sdkbundle.gwt2_9_0.feature</module>
+
+    <!-- SDK Bundles -->
+    <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt2_9_0</module>
+
+    <!-- Use `mvn package` - repository located in ./repo/target/repository -->
+    <module>repo</module>
+  </modules>
+
+  <repositories>
+    <repository>
+      <id>eclipse</id>
+      <url>${eclipse-repo.url}</url>
+      <layout>p2</layout>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <filters>
+          </filters>
+          <environments>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-versions-plugin</artifactId>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-versions-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>target-platform-configuration</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-compiler-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <showWarnings>true</showWarnings>
+          </configuration>
+        </plugin>
+
+        <!-- https://eclipse.org/tycho/sitedocs/tycho-surefire/tycho-surefire-plugin/test-mojo.html -->
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-surefire-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <!-- https://wiki.eclipse.org/Tycho/FAQ#How_to_use_SWTBot_or_some_UI_tool_for_testing.3F -->
+            <useUIHarness>true</useUIHarness> <!-- https://wiki.eclipse.org/SWTBot/Automate_test_execution -->
+            <useUIThread>false</useUIThread>
+            <product>org.eclipse.sdk.ide</product>
+            <application>org.eclipse.ui.ide.workbench</application>
+            <argLine>-Dorg.eclipse.swtbot.search.timeout=${org.eclipse.swtbot.search.timeout} -Xms40m -Xmx1G -Djava.awt.headless=true ${os-jvm-flags}</argLine>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-director-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-repository-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <baselineMode>warn</baselineMode>
+            <baselineReplace>all</baselineReplace>
+            <baselineRepositories>
+              <repository>
+                <url>${comparator.repo}</url>
+              </repository>
+            </baselineRepositories>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>macosx-jvm-flags</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>build-eclipse-2022-09</id>
+      <activation>
+        <property>
+          <name>eclipse.target</name>
+          <value>2022-09</value>
+        </property>
+      </activation>
+      <properties>
+      </properties>
+      <modules>
+        <module>eclipse/2022-09</module>
+      </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>target-platform-configuration</artifactId>
+            <configuration>
+              <target>
+                <artifact>
+                  <groupId>com.gwtplugins.eclipse</groupId>
+                  <artifactId>gwt-eclipse-2022-09</artifactId>
+                  <version>4.25.0-SNAPSHOT</version>
+                </artifact>
+              </target>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- create a copy of the build target platform, suitable for setting as an Eclipse Target Platform -->
+      <id>ide-target-platform</id>
+      <modules>
+        <module>eclipse/ide-target-platform</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>teamcity</id>
+      <properties>
+        <!-- We configure Travis to use jdk7 -->
+        <tycho.toolchains>SYSTEM</tycho.toolchains>
+        <!-- Ensure we don't resolve previous versions of our artifacts -->
+        <tycho.localArtifacts>ignore</tycho.localArtifacts>
+      </properties>
+      <modules>
+        <module>eclipse/ide-target-platform</module>
+        <module>build/verify-feature-completeness</module>
+      </modules>
+    </profile>
+  </profiles>
+</project>

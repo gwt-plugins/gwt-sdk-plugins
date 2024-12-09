@@ -3,4 +3,7 @@ This Project builds the GWT SDK Plugins for the GWT Plugin. This allows you to i
 Alternativly you can simply download the GWT SDK from the GWT projekts website, and reference it in the eclipse preferences.
 
 ## build
-To build the SDK Plugins you can simply use ***mvn clean install***. The Update Site will be created in ***repo/target/repository***
+To build a SDK Plugin you can simply switch into the directory of the version you want to build, and run ***mvn clean package***. The Update Site will be created in ***repo/target/repository***
+
+## new SDK versions
+To add a new SDK Version you can simply call ***bash createNewSDKFolder.sh VERSION***, where VERSION is replaced by the actual version number. 

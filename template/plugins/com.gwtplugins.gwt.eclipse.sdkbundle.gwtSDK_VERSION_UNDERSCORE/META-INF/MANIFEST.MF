@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.sdkbundle.gwtSDK_VERSION_UNDERSCORE;singleton:=true
+Bundle-Version: SDK_VERSION_DOT.qualifier
+Bundle-Vendor: %providerName
+Require-Bundle: org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir

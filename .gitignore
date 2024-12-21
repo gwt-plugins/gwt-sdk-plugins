@@ -22,12 +22,15 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+# Target
+target/
+
 # SDKs
 gwt-2.8.2/
 gwt-2.9.0/
+gwt-2.10.0/
 gwt-2.10.1/
 gwt-2.11.0/
+gwt-2.12.0/
 gwt-2.12.1/
 
-# Target
-target/
